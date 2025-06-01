@@ -1,13 +1,17 @@
 const colors = {
-  primary: "#f4511e",
-  secondary: "#212121",
-  tertiary: "#757575",
-  quaternary: "#bdbdbd",
-  quinary: "#f5f5f5",
-  senary: "#e0e0e0",
-  septenary: "#fafafa",
+  primary: "#598CFF",
+  secondary: "#4F35C7",
+  accent_green: "#8BC34A",
+  accent_yellow: "#FFC107",
 
-  white: "#ffffff",
+  text_white: "#FFFFFF",
+  text_black: "#333333",
+  text_gray: "#757575",
+
+  background_white: "#FFFFFF",
+  background_gray: "#F0F0F0",
+
+  border: "#D3D3D3",
 };
 
 export default colors;

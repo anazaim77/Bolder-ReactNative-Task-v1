@@ -8,7 +8,7 @@ export default function NotFound() {
       <Text style={styles.description}>
         The page you are looking for does not exist.
       </Text>
-      <Link href="/" asChild>
+      <Link href="/(tabs)/home" asChild>
         <TouchableOpacity style={styles.button}>
           <Text style={styles.buttonText}>Go Back Home</Text>
         </TouchableOpacity>
