@@ -23,7 +23,7 @@ const Index = () => {
   }, [fontsLoaded]);
 
   if (!fontsLoaded) return <View />;
-  return <Redirect href="/(tabs)/home" />;
+  return <Redirect href="/(tabs)/workout-planner" />;
 };
 
 export default Index;

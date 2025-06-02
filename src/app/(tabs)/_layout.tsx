@@ -23,13 +23,24 @@ export default function TabLayout() {
           paddingTop: top,
         },
         tabBarLabelStyle: {
-          fontWeight: "bold",
+          fontFamily: "Inter_600SemiBold",
+          fontSize: 14,
+          textTransform: "none",
         },
       }}
     >
-      <MaterialTopTabs.Screen name="home" options={{ title: "Home" }} />
-      <MaterialTopTabs.Screen name="explore" options={{ title: "Explore" }} />
-      <MaterialTopTabs.Screen name="history" options={{ title: "History" }} />
+      <MaterialTopTabs.Screen
+        name="workout-planner"
+        options={{ title: "Workout" }}
+      />
+      <MaterialTopTabs.Screen
+        name="workout-session"
+        options={{ title: "Session" }}
+      />
+      <MaterialTopTabs.Screen
+        name="workout-history"
+        options={{ title: "History" }}
+      />
     </MaterialTopTabs>
   );
 }
