@@ -1,18 +1,28 @@
+import { ButtonApp, Container, TextApp } from "@/components";
+import { Colors } from "@/constants";
+import { router } from "expo-router";
 import * as React from "react";
-import { Text, View, StyleSheet } from "react-native";
 
 interface WorkoutPlannerScreenProps {}
 
 const WorkoutPlannerScreen = (props: WorkoutPlannerScreenProps) => {
   return (
-    <View style={styles.container}>
-      <Text>WorkoutPlannerScreen</Text>
-    </View>
+    <Container flex={1} backgroundColor={Colors.background_gray}>
+      <TextApp>WorkoutPlannerScreen</TextApp>
+      <ButtonApp
+        onPress={() =>
+          router.push({
+            pathname: "/(tabs)/workout-session",
+            params: {
+              workoutId: "123",
+            },
+          })
+        }
+      >
+        Start session
+      </ButtonApp>
+    </Container>
   );
 };
 
 export default WorkoutPlannerScreen;
-
-const styles = StyleSheet.create({
-  container: {},
-});

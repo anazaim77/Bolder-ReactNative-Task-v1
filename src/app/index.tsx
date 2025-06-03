@@ -4,8 +4,7 @@ import {
   Inter_700Bold,
 } from "@expo-google-fonts/inter";
 import { useFonts } from "expo-font";
-import { Redirect } from "expo-router";
-import * as SplashScreen from "expo-splash-screen";
+import { Redirect, SplashScreen } from "expo-router";
 import { useEffect } from "react";
 import { View } from "react-native";
 

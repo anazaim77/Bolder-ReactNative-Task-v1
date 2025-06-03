@@ -1,37 +1,38 @@
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { offline } from "@redux-offline/redux-offline";
+import offlineConfig from "@redux-offline/redux-offline/lib/defaults";
 import {
-  configureStore,
   combineReducers,
+  configureStore,
   StoreEnhancer,
 } from "@reduxjs/toolkit";
 import { persistReducer, persistStore } from "redux-persist";
-import storage from "redux-persist/lib/storage";
-import { offline } from "@redux-offline/redux-offline";
-import offlineConfig from "@redux-offline/redux-offline/lib/defaults";
+import exercisesReducer from "./slices/exercisesSlice";
+import offlineReducer from "./slices/offlineSlice";
+import workoutsReducer from "./slices/workoutsSlice";
 
-// Root reducer
 const rootReducer = combineReducers({
-  // Add your reducers here
+  workouts: workoutsReducer,
+  offline: offlineReducer,
+  exercises: exercisesReducer,
 });
 
-// Persist configuration
 const persistConfig = {
   key: "root",
-  storage,
+  storage: AsyncStorage,
 };
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);
 
-// Store configuration
-const store = configureStore({
+export const store = configureStore({
   reducer: persistedReducer,
+  middleware: (getDefaultMiddleware) =>
+    getDefaultMiddleware({ serializableCheck: false }),
   enhancers: (getDefaultEnhancers) =>
     getDefaultEnhancers().concat(offline(offlineConfig) as StoreEnhancer),
-  middleware: (getDefaultMiddleware) =>
-    getDefaultMiddleware({
-      serializableCheck: false,
-    }),
 });
 
-const persistor = persistStore(store);
+export const persistor = persistStore(store);
 
-export { store, persistor };
+export type RootState = ReturnType<typeof store.getState>;
+export type AppDispatch = typeof store.dispatch;
