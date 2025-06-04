@@ -9,6 +9,8 @@ import { useEffect } from "react";
 import { View } from "react-native";
 
 const Index = () => {
+  const redirectPath = "/(auth)/sign-in";
+  // const redirectPath = "/(tabs)/workout-planner";
   const [fontsLoaded] = useFonts({
     Inter_700Bold,
     Inter_500Medium,
@@ -22,7 +24,7 @@ const Index = () => {
   }, [fontsLoaded]);
 
   if (!fontsLoaded) return <View />;
-  return <Redirect href="/(tabs)/workout-planner" />;
+  return <Redirect href={redirectPath} />;
 };
 
 export default Index;

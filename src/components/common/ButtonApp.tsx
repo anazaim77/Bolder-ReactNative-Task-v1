@@ -32,7 +32,7 @@ const ButtonApp = memo(
             backgroundColor: disabled ? Colors.background_gray : Colors.primary,
             paddingVertical: size === "sm" ? 8 : size === "md" ? 12 : 16,
             paddingHorizontal: size === "sm" ? 16 : size === "md" ? 24 : 32,
-            borderRadius: 12,
+            borderRadius: 100,
           };
         case "outlined":
           return {
@@ -41,7 +41,7 @@ const ButtonApp = memo(
             borderColor: disabled ? Colors.background_gray : Colors.primary,
             paddingVertical: size === "sm" ? 8 : size === "md" ? 12 : 16,
             paddingHorizontal: size === "sm" ? 16 : size === "md" ? 24 : 32,
-            borderRadius: 12,
+            borderRadius: 100,
           };
         case "link":
           return {

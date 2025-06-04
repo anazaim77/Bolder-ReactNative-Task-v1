@@ -41,6 +41,13 @@
           ]
         }
       ]
-    ]
+    ],
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "aa78be85-5697-4d25-8b28-9af046cc74d1"
+      }
+    },
+    "owner": "fajartrigo"
   }
 }
