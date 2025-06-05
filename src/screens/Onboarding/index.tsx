@@ -7,12 +7,15 @@ import {
   TextApp,
 } from "@/components";
 import { Colors, Styles } from "@/constants";
+import { useAuthSelector } from "@/store/slices/authSlice";
 import { router } from "expo-router";
-import { useCallback } from "react";
+import { useCallback, useEffect } from "react";
 
 interface OnboardingScreenProps {}
 
 const OnboardingScreen = ({}: OnboardingScreenProps) => {
+  const { isLoggedIn } = useAuthSelector();
+
   const handleGoToSignUp = useCallback(() => {
     router.push("/(auth)/sign-up");
   }, []);
@@ -20,6 +23,12 @@ const OnboardingScreen = ({}: OnboardingScreenProps) => {
   const handleGoToLogin = useCallback(() => {
     router.push("/(auth)/sign-in");
   }, []);
+
+  useEffect(() => {
+    if (isLoggedIn) {
+      router.replace("/(tabs)/workout-planner");
+    }
+  }, [isLoggedIn]);
 
   return (
     <SafeAreaApp

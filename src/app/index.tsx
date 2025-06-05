@@ -7,6 +7,7 @@ import { useFonts } from "expo-font";
 import { Redirect, SplashScreen } from "expo-router";
 import { useEffect } from "react";
 import { View } from "react-native";
+import { startNetworkLogging } from "react-native-network-logger";
 
 const Index = () => {
   const redirectPath = "/onboarding";
@@ -22,6 +23,10 @@ const Index = () => {
       SplashScreen.hideAsync();
     }
   }, [fontsLoaded]);
+
+  useEffect(function initializeApp() {
+    startNetworkLogging();
+  }, []);
 
   if (!fontsLoaded) return <View />;
   return <Redirect href={redirectPath} />;

@@ -1,6 +1,6 @@
 import { Colors } from "@/constants";
 import React, { memo } from "react";
-import { StyleProp, ViewStyle } from "react-native";
+import { ActivityIndicator, StyleProp, ViewStyle } from "react-native";
 import { TextApp, TouchableApp } from "..";
 import { CommonStyle, getCommonStyle } from "./styles/style";
 
@@ -11,6 +11,7 @@ export interface ButtonAppProps extends CommonStyle {
   size?: "sm" | "md" | "lg";
   onPress?: () => void;
   disabled?: boolean;
+  isLoading?: boolean;
 }
 
 const ButtonApp = memo(
@@ -21,6 +22,7 @@ const ButtonApp = memo(
     size = "md",
     onPress,
     disabled = false,
+    isLoading = false,
     ...props
   }: ButtonAppProps) => {
     const _style = getCommonStyle(props);
@@ -74,14 +76,18 @@ const ButtonApp = memo(
         alignItems="center"
         justifyContent="center"
       >
-        <TextApp
-          color={textColor as keyof typeof Colors}
-          variant="medium"
-          textAlign="center"
-          size={size === "sm" ? "sm" : size === "md" ? "md" : "lg"}
-        >
-          {children}
-        </TextApp>
+        {isLoading ? (
+          <ActivityIndicator size="small" color={Colors.text_white} />
+        ) : (
+          <TextApp
+            color={textColor as keyof typeof Colors}
+            variant="medium"
+            textAlign="center"
+            size={size === "sm" ? "sm" : size === "md" ? "md" : "lg"}
+          >
+            {children}
+          </TextApp>
+        )}
       </TouchableApp>
     );
   }

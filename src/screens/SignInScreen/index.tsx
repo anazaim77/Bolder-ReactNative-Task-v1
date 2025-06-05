@@ -8,10 +8,16 @@ import {
   TextInputApp,
 } from "@/components";
 import { Colors } from "@/constants";
-import { router } from "expo-router";
-import React from "react";
-import { useForm, Controller } from "react-hook-form";
+import StorageKeys from "@/constants/storageKeys";
+import { useBackhandlerAndExit } from "@/hooks";
+import { useAppDispatch } from "@/store";
+import { signIn, useAuthSelector } from "@/store/slices/authSlice";
+import { StorageUtils } from "@/utils";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { router } from "expo-router";
+import React, { useCallback } from "react";
+import { Controller, useForm } from "react-hook-form";
+import { showMessage } from "react-native-flash-message";
 import { z } from "zod";
 
 const signInSchema = z.object({
@@ -27,6 +33,9 @@ type SignInFormData = z.infer<typeof signInSchema>;
 interface SignInScreenProps {}
 
 const SignInScreen = (props: SignInScreenProps) => {
+  const dispatch = useAppDispatch();
+  const { isLoading } = useAuthSelector();
+
   const {
     control,
     handleSubmit,
@@ -39,10 +48,30 @@ const SignInScreen = (props: SignInScreenProps) => {
     },
   });
 
-  const onSubmit = (data: SignInFormData) => {
-    console.log(data);
-    router.push("/(tabs)/workout-planner");
-  };
+  const onSubmit = useCallback(
+    (data: SignInFormData) => {
+      dispatch(
+        signIn({
+          params: { email: data.email, password: data.password },
+          callbacks: {
+            onSuccess: async () => {
+              await StorageUtils.setItem(StorageKeys.AUTH_TOKEN, true);
+              router.replace("/(tabs)/workout-planner");
+            },
+            onError: (error) => {
+              showMessage({
+                message: error.msg,
+                type: "danger",
+              });
+            },
+          },
+        })
+      );
+    },
+    [dispatch, router]
+  );
+
+  useBackhandlerAndExit();
 
   return (
     <>
@@ -99,7 +128,11 @@ const SignInScreen = (props: SignInScreenProps) => {
         padding={16}
         paddingBottom={0}
       >
-        <ButtonApp onPress={handleSubmit(onSubmit)} flex={1}>
+        <ButtonApp
+          onPress={handleSubmit(onSubmit)}
+          flex={1}
+          isLoading={isLoading}
+        >
           Sign In
         </ButtonApp>
       </SafeAreaApp>

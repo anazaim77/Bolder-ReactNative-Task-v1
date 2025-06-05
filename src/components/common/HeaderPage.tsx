@@ -1,13 +1,13 @@
+import { Colors } from "@/constants";
 import { AntDesign } from "@expo/vector-icons";
 import { router } from "expo-router";
 import { useCallback, useMemo } from "react";
 import { StyleProp, ViewStyle } from "react-native";
-import { Container, PressableApp, SafeAreaApp, TextApp } from "..";
+import { Edges } from "react-native-safe-area-context";
+import { PressableApp, SafeAreaApp, TextApp } from "..";
 import { ContainerProps } from "./Container";
 import { CommonStyle, getCommonStyle } from "./styles/style";
 import { TextAppProps } from "./TextApp";
-import { Edges } from "react-native-safe-area-context";
-import { Colors } from "@/constants";
 
 interface HeaderPageProps extends CommonStyle {
   title?: string;
@@ -16,6 +16,7 @@ interface HeaderPageProps extends CommonStyle {
   containerProps?: ContainerProps;
   titleProps?: TextAppProps;
   isSafeTop?: boolean;
+  onLeftPress?: () => void;
 }
 
 const HeaderPage: React.FC<HeaderPageProps> = ({
@@ -25,13 +26,18 @@ const HeaderPage: React.FC<HeaderPageProps> = ({
   containerProps,
   titleProps,
   isSafeTop = true,
+  onLeftPress,
   ...props
 }) => {
   const _style = getCommonStyle(props);
 
   const handleGoBack = useCallback(() => {
+    if (onLeftPress) {
+      onLeftPress();
+      return;
+    }
     router.back();
-  }, []);
+  }, [onLeftPress]);
 
   const _edges: Edges = useMemo(() => {
     if (isSafeTop) {

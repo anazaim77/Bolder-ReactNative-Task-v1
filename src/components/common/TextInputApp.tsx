@@ -93,5 +93,5 @@ const TextInputApp = memo(
 export default TextInputApp;
 
 const styles = StyleSheet.create({
-  textInput: { padding: 16 },
+  textInput: { padding: 16, flex: 1 },
 });

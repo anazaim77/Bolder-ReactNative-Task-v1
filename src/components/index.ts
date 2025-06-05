@@ -10,3 +10,4 @@ export { default as ImageApp } from "./common/ImageApp";
 export { default as HeaderPage } from "./common/HeaderPage";
 export { default as ErrorText } from "./common/ErrorText";
 export { default as TextInputApp } from "./common/TextInputApp";
+export { default as FABDeveloperMenu } from "./common/FABDeveloperMenu";

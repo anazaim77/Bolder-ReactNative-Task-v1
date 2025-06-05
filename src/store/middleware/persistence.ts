@@ -5,7 +5,7 @@ import { persistReducer } from "redux-persist";
 export const persistConfig = {
   key: "root",
   storage: AsyncStorage,
-  whitelist: ["workouts", "exercises"],
+  whitelist: ["workouts", "exercises", "auth"],
   transforms: [],
   migrate: (state: any) => {
     return Promise.resolve(state);

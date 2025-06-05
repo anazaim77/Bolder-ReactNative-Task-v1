@@ -3,6 +3,7 @@
 import { Config } from "@/constants";
 import axios, { InternalAxiosRequestConfig } from "axios";
 import { showMessage } from "react-native-flash-message";
+import { store } from "@/store";
 
 const axiosClient = axios.create({
   baseURL: Config.supabaseUrl,
@@ -15,7 +16,10 @@ const axiosClient = axios.create({
 
 axiosClient.interceptors.request.use(
   async (config: InternalAxiosRequestConfig) => {
-    const authToken = "TBA";
+    config.baseURL = Config.supabaseUrl;
+    const state = store.getState();
+    const authToken = state.auth.token;
+
     if (Config.supabaseAnonKey) {
       config.headers.set("apikey", Config.supabaseAnonKey);
     }
@@ -31,7 +35,6 @@ axiosClient.interceptors.request.use(
 
 axiosClient.interceptors.response.use(
   (response) => {
-    // console.log("[Axios] response.success", response);
     return response;
   },
   (error) => {
@@ -39,7 +42,7 @@ axiosClient.interceptors.response.use(
     if (error.response.status === 401) {
       // unauthorized
       showMessage({
-        message: "Silahkan masuk untuk melanjutkan",
+        message: "Please sign in to continue",
         type: "danger",
         duration: 3000,
       });
@@ -57,7 +60,6 @@ axiosClient.interceptors.response.use(
       if (typeof message !== "string") {
         message = JSON.stringify(message);
       }
-      console.log({ err: error.response.config.url });
 
       // showMessage({
       //   message: message,

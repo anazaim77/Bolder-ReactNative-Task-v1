@@ -9,10 +9,13 @@ import {
 } from "@/components";
 import { Colors } from "@/constants";
 import { router } from "expo-router";
-import React from "react";
+import React, { useCallback } from "react";
 import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
+import { useAppDispatch } from "@/store";
+import { signUp } from "@/store/slices/authSlice";
+import { showMessage } from "react-native-flash-message";
 
 const signUpSchema = z
   .object({
@@ -39,6 +42,7 @@ type SignUpFormData = z.infer<typeof signUpSchema>;
 interface SignUpScreenProps {}
 
 const SignUpScreen = (props: SignUpScreenProps) => {
+  const dispatch = useAppDispatch();
   const {
     control,
     handleSubmit,
@@ -52,10 +56,32 @@ const SignUpScreen = (props: SignUpScreenProps) => {
     },
   });
 
-  const onSubmit = (data: SignUpFormData) => {
-    console.log(data);
-    router.push("/(tabs)/workout-planner");
-  };
+  const onSubmit = useCallback(
+    (data: SignUpFormData) => {
+      router.push("/(tabs)/workout-planner");
+      dispatch(
+        signUp({
+          params: { email: data.email, password: data.password },
+          callbacks: {
+            onSuccess: () => {
+              router.push("/sign-in");
+              showMessage({
+                message: "Please confirm your email address",
+                type: "success",
+              });
+            },
+            onError: (error) => {
+              showMessage({
+                message: error.response.data.message,
+                type: "danger",
+              });
+            },
+          },
+        })
+      );
+    },
+    [router]
+  );
 
   return (
     <>
