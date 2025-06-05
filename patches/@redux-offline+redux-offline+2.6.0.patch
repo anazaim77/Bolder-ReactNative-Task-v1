@@ -1,0 +1,129 @@
+diff --git a/node_modules/@redux-offline/redux-offline/lib/defaults/detectNetwork.native.js b/node_modules/@redux-offline/redux-offline/lib/defaults/detectNetwork.native.js
+index b290d79..15a1aa5 100644
+--- a/node_modules/@redux-offline/redux-offline/lib/defaults/detectNetwork.native.js
++++ b/node_modules/@redux-offline/redux-offline/lib/defaults/detectNetwork.native.js
+@@ -19,6 +19,8 @@ var _defineProperty2 = _interopRequireDefault(require("@babel/runtime/helpers/de
+ 
+ var _reactNative = require("react-native");
+ 
++var _netInfo = require("@react-native-community/netinfo");
++
+ var _detectNetworkNative = _interopRequireDefault(require("./detectNetwork.native.legacy"));
+ 
+ /* eslint no-underscore-dangle: 0 */
+@@ -53,7 +55,7 @@ var DetectNetwork = /*#__PURE__*/function () {
+             case 0:
+               _context.prev = 0;
+               _context.next = 3;
+-              return _reactNative.NetInfo.isConnectionExpensive();
++              return _netInfo.isConnectionExpensive();
+ 
+             case 3:
+               _this._isConnectionExpensive = _context.sent;
+@@ -83,7 +85,7 @@ var DetectNetwork = /*#__PURE__*/function () {
+           switch (_context2.prev = _context2.next) {
+             case 0:
+               _context2.next = 2;
+-              return _reactNative.NetInfo.getConnectionInfo();
++              return _netInfo.getConnectionInfo();
+ 
+             case 2:
+               connectionInfo = _context2.sent;
+@@ -161,7 +163,7 @@ var DetectNetwork = /*#__PURE__*/function () {
+     value: function _addListeners() {
+       var _this2 = this;
+ 
+-      _reactNative.NetInfo.addEventListener('connectionChange', function (connectionInfo) {
++      _netInfo.addEventListener('connectionChange', function (connectionInfo) {
+         _this2._setShouldInitUpdateReach(false);
+ 
+         _this2._update(connectionInfo.type);
+@@ -176,7 +178,7 @@ var DetectNetwork = /*#__PURE__*/function () {
+                 _this2._setShouldInitUpdateReach(false);
+ 
+                 _context4.next = 3;
+-                return _reactNative.NetInfo.getConnectionInfo();
++                return _netInfo.getConnectionInfo();
+ 
+               case 3:
+                 connectionInfo = _context4.sent;
+@@ -202,7 +204,7 @@ var DetectNetwork = /*#__PURE__*/function () {
+   return DetectNetwork;
+ }();
+ 
+-var isLegacy = typeof _reactNative.NetInfo.getConnectionInfo === 'undefined';
++var isLegacy = typeof _netInfo.getConnectionInfo === 'undefined';
+ 
+ var _default = function _default(callback) {
+   return isLegacy ? new _detectNetworkNative.default(callback) : new DetectNetwork(callback);
+diff --git a/node_modules/@redux-offline/redux-offline/lib/defaults/detectNetwork.native.legacy.js b/node_modules/@redux-offline/redux-offline/lib/defaults/detectNetwork.native.legacy.js
+index 96c187a..0fcc1c5 100644
+--- a/node_modules/@redux-offline/redux-offline/lib/defaults/detectNetwork.native.legacy.js
++++ b/node_modules/@redux-offline/redux-offline/lib/defaults/detectNetwork.native.legacy.js
+@@ -19,6 +19,8 @@ var _defineProperty2 = _interopRequireDefault(require("@babel/runtime/helpers/de
+ 
+ var _reactNative = require("react-native");
+ 
++var _netInfo = require("@react-native-community/netinfo");
++
+ /* eslint no-underscore-dangle: 0 */
+ // eslint-disable-line
+ var LegacyDetectNetwork = /*#__PURE__*/function () {
+@@ -51,7 +53,7 @@ var LegacyDetectNetwork = /*#__PURE__*/function () {
+             case 0:
+               _context.prev = 0;
+               _context.next = 3;
+-              return _reactNative.NetInfo.isConnectionExpensive();
++              return _netInfo.isConnectionExpensive();
+ 
+             case 3:
+               _this._isConnectionExpensive = _context.sent;
+@@ -81,7 +83,7 @@ var LegacyDetectNetwork = /*#__PURE__*/function () {
+           switch (_context2.prev = _context2.next) {
+             case 0:
+               _context2.next = 2;
+-              return _reactNative.NetInfo.fetch();
++              return _netInfo.fetch();
+ 
+             case 2:
+               reach = _context2.sent;
+@@ -162,7 +164,7 @@ var LegacyDetectNetwork = /*#__PURE__*/function () {
+     value: function _addListeners() {
+       var _this2 = this;
+ 
+-      _reactNative.NetInfo.addEventListener('change', function (reach) {
++      _netInfo.addEventListener('change', function (reach) {
+         _this2._setShouldInitUpdateReach(false);
+ 
+         _this2._update(reach);
+@@ -177,7 +179,7 @@ var LegacyDetectNetwork = /*#__PURE__*/function () {
+                 _this2._setShouldInitUpdateReach(false);
+ 
+                 _context4.next = 3;
+-                return _reactNative.NetInfo.fetch();
++                return _netInfo.fetch();
+ 
+               case 3:
+                 reach = _context4.sent;
+diff --git a/node_modules/@redux-offline/redux-offline/lib/defaults/persist.native.js b/node_modules/@redux-offline/redux-offline/lib/defaults/persist.native.js
+index b084544..08b6d39 100644
+--- a/node_modules/@redux-offline/redux-offline/lib/defaults/persist.native.js
++++ b/node_modules/@redux-offline/redux-offline/lib/defaults/persist.native.js
+@@ -9,7 +9,7 @@ exports.default = void 0;
+ 
+ var _defineProperty2 = _interopRequireDefault(require("@babel/runtime/helpers/defineProperty"));
+ 
+-var _reactNative = require("react-native");
++var _asyncStorage = require("@react-native-async-storage/async-storage");
+ 
+ var _reduxPersist = require("redux-persist");
+ 
+@@ -20,7 +20,7 @@ function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { va
+ var _default = function _default(store, options, callback) {
+   return (// $FlowFixMe
+     (0, _reduxPersist.persistStore)(store, _objectSpread({
+-      storage: _reactNative.AsyncStorage
++      storage: _asyncStorage
+     }, options), callback)
+   );
+ };

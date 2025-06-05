@@ -3,6 +3,7 @@ const colors = {
   secondary: "#4F35C7",
   accent_green: "#8BC34A",
   accent_yellow: "#FFC107",
+  error_red: "#FF0000",
 
   text_white: "#FFFFFF",
   text_black: "#333333",

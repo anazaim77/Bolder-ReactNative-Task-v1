@@ -9,7 +9,7 @@ import { useEffect } from "react";
 import { View } from "react-native";
 
 const Index = () => {
-  const redirectPath = "/(auth)/sign-in";
+  const redirectPath = "/onboarding";
   // const redirectPath = "/(tabs)/workout-planner";
   const [fontsLoaded] = useFonts({
     Inter_700Bold,

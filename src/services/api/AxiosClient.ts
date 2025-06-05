@@ -16,6 +16,9 @@ const axiosClient = axios.create({
 axiosClient.interceptors.request.use(
   async (config: InternalAxiosRequestConfig) => {
     const authToken = "TBA";
+    if (Config.supabaseAnonKey) {
+      config.headers.set("apikey", Config.supabaseAnonKey);
+    }
     if (authToken) {
       config.headers.set("Authorization", `Bearer ${authToken}`);
     }

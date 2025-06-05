@@ -71,10 +71,13 @@ const ButtonApp = memo(
         style={[_style, _variantStyle, style]}
         onPress={onPress}
         disabled={disabled}
+        alignItems="center"
+        justifyContent="center"
       >
         <TextApp
           color={textColor as keyof typeof Colors}
           variant="medium"
+          textAlign="center"
           size={size === "sm" ? "sm" : size === "md" ? "md" : "lg"}
         >
           {children}

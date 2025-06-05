@@ -1,14 +1,15 @@
 import { Colors } from "@/constants";
 import React from "react";
-import { StyleProp, Text, TextInputProps, TextStyle } from "react-native";
+import { StyleProp, Text, TextProps, TextStyle } from "react-native";
 import { CommonStyle, getCommonStyle } from "./styles/style";
 
-interface TextAppProps extends CommonStyle, TextInputProps {
+interface TextAppProps extends CommonStyle, TextProps {
   children: React.ReactNode;
   style?: StyleProp<TextStyle>;
   variant?: "light" | "medium" | "bold";
-  size?: "xs" | "sm" | "md" | "lg" | "xl";
+  size?: "xs" | "sm" | "md" | "lg" | "xl" | "2xl" | "3xl" | "4xl" | number;
   color?: keyof typeof Colors;
+  textAlign?: "left" | "center" | "right";
 }
 
 const TextApp: React.FC<TextAppProps> = ({
@@ -31,7 +32,9 @@ const TextApp: React.FC<TextAppProps> = ({
           ? "Inter_700Bold"
           : "Inter_500Medium",
       fontSize:
-        size === "xs"
+        typeof size === "number"
+          ? size
+          : size === "xs"
           ? 10
           : size === "sm"
           ? 12
@@ -41,6 +44,12 @@ const TextApp: React.FC<TextAppProps> = ({
           ? 18
           : size === "xl"
           ? 24
+          : size === "2xl"
+          ? 28
+          : size === "3xl"
+          ? 32
+          : size === "4xl"
+          ? 36
           : 14,
       color: Colors[color as keyof typeof Colors],
     }),

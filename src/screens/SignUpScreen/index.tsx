@@ -1,15 +1,142 @@
-import { Container, SafeAreaApp, TextApp } from "@/components";
-import * as React from "react";
+import {
+  ButtonApp,
+  Container,
+  HeaderPage,
+  SafeAreaApp,
+  ScrollViewApp,
+  TextApp,
+  TextInputApp,
+} from "@/components";
+import { Colors } from "@/constants";
+import { router } from "expo-router";
+import React from "react";
+import { useForm, Controller } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
+
+const signUpSchema = z
+  .object({
+    email: z
+      .string()
+      .min(1, "Email is required")
+      .email("Invalid email address"),
+    password: z
+      .string()
+      .min(1, "Password is required")
+      .min(8, "Password must be at least 8 characters"),
+    confirmPassword: z
+      .string()
+      .min(1, "Confirm password is required")
+      .min(8, "Confirm password must be at least 8 characters"),
+  })
+  .refine((data) => data.password === data.confirmPassword, {
+    message: "Passwords don't match",
+    path: ["confirmPassword"],
+  });
+
+type SignUpFormData = z.infer<typeof signUpSchema>;
 
 interface SignUpScreenProps {}
 
 const SignUpScreen = (props: SignUpScreenProps) => {
+  const {
+    control,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<SignUpFormData>({
+    resolver: zodResolver(signUpSchema),
+    defaultValues: {
+      email: "",
+      password: "",
+      confirmPassword: "",
+    },
+  });
+
+  const onSubmit = (data: SignUpFormData) => {
+    console.log(data);
+    router.push("/(tabs)/workout-planner");
+  };
+
   return (
-    <SafeAreaApp>
-      <Container>
-        <TextApp>SignUpScreen</TextApp>
-      </Container>
-    </SafeAreaApp>
+    <>
+      <HeaderPage />
+      <SafeAreaApp
+        backgroundColor={Colors.background_white}
+        edges={["bottom"]}
+        flex={1}
+      >
+        <ScrollViewApp paddingHorizontal={16}>
+          <TextApp size={"3xl"} variant="bold" marginTop={34}>
+            Lets Register Account
+          </TextApp>
+          <TextApp
+            size={"xl"}
+            variant="medium"
+            marginTop={16}
+            paddingRight={30}
+          >
+            Hello user, you have a greatful journey ahead
+          </TextApp>
+          <Container marginTop={81} gap={16}>
+            <Controller
+              control={control}
+              name="email"
+              render={({ field: { onChange, value } }) => (
+                <TextInputApp
+                  label="Email"
+                  placeholder="john.doe@mail.com"
+                  keyboardType="email-address"
+                  errorText={errors.email?.message}
+                  value={value}
+                  onChangeText={onChange}
+                />
+              )}
+            />
+            <Controller
+              control={control}
+              name="password"
+              render={({ field: { onChange, value } }) => (
+                <TextInputApp
+                  label="Password"
+                  placeholder="********"
+                  keyboardType="visible-password"
+                  errorText={errors.password?.message}
+                  secureTextEntry
+                  value={value}
+                  onChangeText={onChange}
+                />
+              )}
+            />
+            <Controller
+              control={control}
+              name="confirmPassword"
+              render={({ field: { onChange, value } }) => (
+                <TextInputApp
+                  label="Confirm Password"
+                  placeholder="********"
+                  keyboardType="visible-password"
+                  errorText={errors.confirmPassword?.message}
+                  secureTextEntry
+                  value={value}
+                  onChangeText={onChange}
+                />
+              )}
+            />
+          </Container>
+        </ScrollViewApp>
+      </SafeAreaApp>
+      <SafeAreaApp
+        edges={["bottom"]}
+        flexDirection="row"
+        backgroundColor={Colors.background_white}
+        padding={16}
+        paddingBottom={0}
+      >
+        <ButtonApp onPress={handleSubmit(onSubmit)} flex={1}>
+          Sign Up
+        </ButtonApp>
+      </SafeAreaApp>
+    </>
   );
 };
 
