@@ -9,10 +9,29 @@
     "web": "expo start --web"
   },
   "dependencies": {
+    "@expo-google-fonts/inter": "^0.4.1",
+    "@hookform/resolvers": "^5.1.0",
+    "@react-native-async-storage/async-storage": "2.1.2",
+    "@react-navigation/material-top-tabs": "^7.2.14",
+    "@react-navigation/native": "^7.1.10",
+    "@react-navigation/stack": "^7.3.3",
+    "@reduxjs/toolkit": "^2.8.2",
+    "axios": "^1.9.0",
     "expo": "~53.0.10",
+    "expo-app-loading": "^2.1.1",
+    "expo-font": "^13.3.1",
     "expo-status-bar": "~2.2.3",
     "react": "19.0.0",
-    "react-native": "0.79.3"
+    "react-hook-form": "^7.57.0",
+    "react-native": "0.79.3",
+    "react-native-pager-view": "^6.8.1",
+    "react-native-tab-view": "^4.1.1",
+    "react-navigation": "^5.0.0",
+    "react-redux": "^9.2.0",
+    "redux": "^5.0.1",
+    "redux-offline": "^2.0.0",
+    "redux-persist": "^6.0.0",
+    "zod": "^3.25.56"
   },
   "devDependencies": {
     "@babel/core": "^7.25.2",

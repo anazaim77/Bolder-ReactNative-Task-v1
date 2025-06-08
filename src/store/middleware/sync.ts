@@ -1,0 +1,2 @@
+// Sync middleware
+export {};
