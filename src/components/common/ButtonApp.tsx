@@ -72,7 +72,7 @@ const ButtonApp = memo(
       <TouchableApp
         style={[_style, _variantStyle, style]}
         onPress={onPress}
-        disabled={disabled}
+        disabled={disabled || isLoading}
         alignItems="center"
         justifyContent="center"
       >

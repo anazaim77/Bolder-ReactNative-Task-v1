@@ -17,21 +17,19 @@ interface SignUpParams extends SignInParams {
   name?: string;
 }
 
-// interface AuthCallbacks {
-//   onSuccess?: (response: { user: StateTypes.User; token: string }) => void;
-//   onError?: (error: any) => void;
-// }
-
 export const signIn = createAsyncThunk(
   "auth/signIn",
   async (
     { params, callbacks }: { params: SignInParams; callbacks?: AuthCallbacks },
     { rejectWithValue }
-  ) =>
-    authService
-      .signIn(params, callbacks)
-      .then((response) => response)
-      .catch((error) => rejectWithValue(error.msg || "Failed to sign in"))
+  ) => {
+    try {
+      const response = await authService.signIn(params, callbacks);
+      return response;
+    } catch (error: any) {
+      return rejectWithValue(error.msg || "Failed to sign in");
+    }
+  }
 );
 
 export const signUp = createAsyncThunk(
@@ -66,8 +64,9 @@ export const authSlice = createSlice({
   name: "auth",
   initialState,
   reducers: {
-    clearError: (state) => {
+    cleanAuthState: (state) => {
       state.error = null;
+      state.isLoading = false;
     },
   },
   extraReducers: (builder) => {
@@ -79,8 +78,6 @@ export const authSlice = createSlice({
       })
       .addCase(signIn.fulfilled, (state, action) => {
         state.isLoading = false;
-        state.user = action.payload.user;
-        state.token = action.payload.token;
         state.error = null;
         state.isLoggedIn = true;
       })
@@ -96,15 +93,11 @@ export const authSlice = createSlice({
       })
       .addCase(signUp.fulfilled, (state, action) => {
         state.isLoading = false;
-        state.user = action.payload.user;
-        state.token = action.payload.token;
         state.error = null;
-        state.isLoggedIn = true;
       })
       .addCase(signUp.rejected, (state, action) => {
         state.isLoading = false;
         state.error = action.payload as string;
-        state.isLoggedIn = false;
       })
       // Sign Out
       .addCase(signOut.pending, (state) => {
@@ -124,7 +117,7 @@ export const authSlice = createSlice({
   },
 });
 
-export const { clearError } = authSlice.actions;
+export const { cleanAuthState } = authSlice.actions;
 
 export default authSlice.reducer;
 

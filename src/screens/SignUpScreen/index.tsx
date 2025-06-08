@@ -14,8 +14,10 @@ import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { useAppDispatch } from "@/store";
-import { signUp } from "@/store/slices/authSlice";
+import { signUp, useAuthSelector } from "@/store/slices/authSlice";
 import { showMessage } from "react-native-flash-message";
+import { Platform } from "react-native";
+import { KeyboardAvoidingView } from "react-native";
 
 const signUpSchema = z
   .object({
@@ -43,6 +45,8 @@ interface SignUpScreenProps {}
 
 const SignUpScreen = (props: SignUpScreenProps) => {
   const dispatch = useAppDispatch();
+  const { isLoading } = useAuthSelector();
+
   const {
     control,
     handleSubmit,
@@ -58,13 +62,12 @@ const SignUpScreen = (props: SignUpScreenProps) => {
 
   const onSubmit = useCallback(
     (data: SignUpFormData) => {
-      router.push("/(tabs)/workout-planner");
       dispatch(
         signUp({
           params: { email: data.email, password: data.password },
           callbacks: {
             onSuccess: () => {
-              router.push("/sign-in");
+              router.replace("/(auth)/sign-in");
               showMessage({
                 message: "Please confirm your email address",
                 type: "success",
@@ -80,88 +83,100 @@ const SignUpScreen = (props: SignUpScreenProps) => {
         })
       );
     },
-    [router]
+    [dispatch, router]
   );
 
   return (
     <>
       <HeaderPage />
-      <SafeAreaApp
-        backgroundColor={Colors.background_white}
-        edges={["bottom"]}
-        flex={1}
+      <KeyboardAvoidingView
+        style={{ flex: 1 }}
+        behavior={Platform.OS === "ios" ? "padding" : "height"}
+        accessible={true}
+        enabled
+        focusable
       >
-        <ScrollViewApp paddingHorizontal={16}>
-          <TextApp size={"3xl"} variant="bold" marginTop={34}>
-            Lets Register Account
-          </TextApp>
-          <TextApp
-            size={"xl"}
-            variant="medium"
-            marginTop={16}
-            paddingRight={30}
+        <SafeAreaApp
+          backgroundColor={Colors.background_white}
+          edges={["bottom"]}
+          flex={1}
+        >
+          <ScrollViewApp paddingHorizontal={16}>
+            <TextApp size={"3xl"} variant="bold" marginTop={34}>
+              Lets Register Account
+            </TextApp>
+            <TextApp
+              size={"xl"}
+              variant="medium"
+              marginTop={16}
+              paddingRight={30}
+            >
+              Hello user, you have a greatful journey ahead
+            </TextApp>
+            <Container marginTop={81} gap={16}>
+              <Controller
+                control={control}
+                name="email"
+                render={({ field: { onChange, value } }) => (
+                  <TextInputApp
+                    label="Email"
+                    placeholder="john.doe@mail.com"
+                    keyboardType="email-address"
+                    errorText={errors.email?.message}
+                    value={value}
+                    onChangeText={onChange}
+                  />
+                )}
+              />
+              <Controller
+                control={control}
+                name="password"
+                render={({ field: { onChange, value } }) => (
+                  <TextInputApp
+                    label="Password"
+                    placeholder="********"
+                    keyboardType="visible-password"
+                    errorText={errors.password?.message}
+                    secureTextEntry
+                    value={value}
+                    onChangeText={onChange}
+                  />
+                )}
+              />
+              <Controller
+                control={control}
+                name="confirmPassword"
+                render={({ field: { onChange, value } }) => (
+                  <TextInputApp
+                    label="Confirm Password"
+                    placeholder="********"
+                    keyboardType="visible-password"
+                    errorText={errors.confirmPassword?.message}
+                    secureTextEntry
+                    value={value}
+                    onChangeText={onChange}
+                  />
+                )}
+              />
+            </Container>
+          </ScrollViewApp>
+        </SafeAreaApp>
+        <SafeAreaApp
+          edges={["bottom"]}
+          flexDirection="row"
+          backgroundColor={Colors.background_white}
+          padding={16}
+          paddingBottom={0}
+        >
+          <ButtonApp
+            onPress={handleSubmit(onSubmit)}
+            flex={1}
+            isLoading={isLoading}
           >
-            Hello user, you have a greatful journey ahead
-          </TextApp>
-          <Container marginTop={81} gap={16}>
-            <Controller
-              control={control}
-              name="email"
-              render={({ field: { onChange, value } }) => (
-                <TextInputApp
-                  label="Email"
-                  placeholder="john.doe@mail.com"
-                  keyboardType="email-address"
-                  errorText={errors.email?.message}
-                  value={value}
-                  onChangeText={onChange}
-                />
-              )}
-            />
-            <Controller
-              control={control}
-              name="password"
-              render={({ field: { onChange, value } }) => (
-                <TextInputApp
-                  label="Password"
-                  placeholder="********"
-                  keyboardType="visible-password"
-                  errorText={errors.password?.message}
-                  secureTextEntry
-                  value={value}
-                  onChangeText={onChange}
-                />
-              )}
-            />
-            <Controller
-              control={control}
-              name="confirmPassword"
-              render={({ field: { onChange, value } }) => (
-                <TextInputApp
-                  label="Confirm Password"
-                  placeholder="********"
-                  keyboardType="visible-password"
-                  errorText={errors.confirmPassword?.message}
-                  secureTextEntry
-                  value={value}
-                  onChangeText={onChange}
-                />
-              )}
-            />
-          </Container>
-        </ScrollViewApp>
-      </SafeAreaApp>
-      <SafeAreaApp
-        edges={["bottom"]}
-        flexDirection="row"
-        backgroundColor={Colors.background_white}
-        padding={16}
-        paddingBottom={0}
-      >
-        <ButtonApp onPress={handleSubmit(onSubmit)} flex={1}>
-          Sign Up
-        </ButtonApp>
-      </SafeAreaApp>
+            Sign Up
+          </ButtonApp>
+        </SafeAreaApp>
+      </KeyboardAvoidingView>
     </>
   );
 };

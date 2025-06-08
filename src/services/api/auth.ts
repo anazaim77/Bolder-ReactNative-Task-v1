@@ -11,6 +11,10 @@ interface SignUpParams extends SignInParams {
   name?: string;
 }
 
+interface ResetPasswordParams {
+  email: string;
+}
+
 interface AuthResponse {
   user: StateTypes.User;
   token: string;
@@ -47,17 +51,16 @@ export const authService = {
     params: SignUpParams,
     callbacks?: AuthCallbacks
   ): Promise<AuthResponse> => {
-    try {
-      const response = await axiosClient.post<AuthResponse>(
-        "/auth/v1/signup",
-        params
-      );
-      callbacks?.onSuccess?.(response.data);
-      return response.data;
-    } catch (error) {
-      callbacks?.onError?.(error);
-      throw error;
-    }
+    return axiosClient
+      .post<AuthResponse>("/auth/v1/signup", params)
+      .then((response) => {
+        callbacks?.onSuccess?.(response.data);
+        return response.data;
+      })
+      .catch((error) => {
+        callbacks?.onError?.(error);
+        throw error;
+      });
   },
 
   signOut: async (callbacks?: AuthLogoutCallbacks): Promise<void> => {
@@ -68,5 +71,22 @@ export const authService = {
       callbacks?.onError?.(error);
       throw error;
     }
+  },
+
+  resetPassword: async (
+    params: ResetPasswordParams,
+    callbacks?: AuthCallbacks
+  ) => {
+    return axiosClient
+      .post<AuthResponse>("/auth/v1/recover", params)
+      .then((response) => {
+        console.log("res", response);
+        callbacks?.onSuccess?.(response.data);
+        return response.data;
+      })
+      .catch((error) => {
+        callbacks?.onError?.(error);
+        throw error;
+      });
   },
 };

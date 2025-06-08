@@ -1,3 +1,4 @@
+import { TextApp } from "@/components";
 import {
   Inter_300Light,
   Inter_500Medium,
@@ -28,7 +29,7 @@ const Index = () => {
     startNetworkLogging();
   }, []);
 
-  if (!fontsLoaded) return <View />;
+  if (!fontsLoaded) return <View></View>;
   return <Redirect href={redirectPath} />;
 };
 

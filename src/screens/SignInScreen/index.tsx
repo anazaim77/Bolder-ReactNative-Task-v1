@@ -6,10 +6,12 @@ import {
   ScrollViewApp,
   TextApp,
   TextInputApp,
+  TouchableApp,
 } from "@/components";
 import { Colors } from "@/constants";
 import StorageKeys from "@/constants/storageKeys";
 import { useBackhandlerAndExit } from "@/hooks";
+import { authService } from "@/services/api/auth";
 import { useAppDispatch } from "@/store";
 import { signIn, useAuthSelector } from "@/store/slices/authSlice";
 import { StorageUtils } from "@/utils";
@@ -54,8 +56,8 @@ const SignInScreen = (props: SignInScreenProps) => {
         signIn({
           params: { email: data.email, password: data.password },
           callbacks: {
-            onSuccess: async () => {
-              await StorageUtils.setItem(StorageKeys.AUTH_TOKEN, true);
+            onSuccess: async (response) => {
+              void StorageUtils.setItem(StorageKeys.AUTH_TOKEN, response.token);
               router.replace("/(tabs)/workout-planner");
             },
             onError: (error) => {
@@ -70,6 +72,10 @@ const SignInScreen = (props: SignInScreenProps) => {
     },
     [dispatch, router]
   );
+
+  const handleResetPassword = useCallback(() => {
+    router.push("/reset-password");
+  }, []);
 
   useBackhandlerAndExit();
 
@@ -118,6 +124,9 @@ const SignInScreen = (props: SignInScreenProps) => {
                 />
               )}
             />
+            <TouchableApp onPress={handleResetPassword}>
+              <TextApp color="primary">Reset password</TextApp>
+            </TouchableApp>
           </Container>
         </ScrollViewApp>
       </SafeAreaApp>
