@@ -10,6 +10,7 @@ import exercisesReducer from "./slices/exercisesSlice";
 import offlineReducer from "./slices/offlineSlice";
 import workoutsReducer from "./slices/workoutsSlice";
 import authReducer from "./slices/authSlice";
+import historyReducer from "./slices/historySlice";
 import { persistStore } from "redux-persist";
 import { useDispatch } from "react-redux";
 
@@ -18,6 +19,7 @@ const rootReducer = combineReducers({
   offline: offlineReducer,
   exercises: exercisesReducer,
   auth: authReducer,
+  history: historyReducer,
 });
 
 const persistedReducer = createPersistedReducer(rootReducer);
@@ -37,6 +39,7 @@ export interface RootState {
   offline: StoreTypes.OfflineState;
   exercises: StoreTypes.ExercisesState;
   auth: StoreTypes.AuthState;
+  history: StoreTypes.HistoryState;
 }
 
 export type AppDispatch = typeof store.dispatch;

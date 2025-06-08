@@ -10,9 +10,8 @@ import { useFonts } from "expo-font";
 import { useEffect, useState } from "react";
 import { Provider } from "react-redux";
 import { PersistGate } from "redux-persist/integration/react";
-import AppNavigator from "./navigation";
+import AppWrapper from "./components/AppWrapper";
 import { persistor, store } from "./store";
-import { NavigationUtils } from "./utils";
 
 const PERSISTENCE_KEY = "NAVIGATION_STATE_V1";
 
@@ -59,13 +58,7 @@ const App = () => {
   return (
     <Provider store={store}>
       <PersistGate loading={<AppLoading />} persistor={persistor}>
-        <AppNavigator
-          initialState={initialState}
-          onStateChange={(state) =>
-            AsyncStorage.setItem(PERSISTENCE_KEY, JSON.stringify(state))
-          }
-          ref={NavigationUtils.navigationRef}
-        />
+        <AppWrapper initialState={initialState} />
       </PersistGate>
     </Provider>
   );

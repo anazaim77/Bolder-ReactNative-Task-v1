@@ -80,7 +80,14 @@ export const authService = {
     return axiosClient
       .post<AuthResponse>("/auth/v1/recover", params)
       .then((response) => {
-        console.log("res", response);
+        // Log successful authentication response in development
+    if (__DEV__) {
+      console.log("Authentication successful:", {
+        status: response.status,
+        userId: response.data?.user?.id,
+        timestamp: new Date().toISOString()
+      });
+    }
         callbacks?.onSuccess?.(response.data);
         return response.data;
       })

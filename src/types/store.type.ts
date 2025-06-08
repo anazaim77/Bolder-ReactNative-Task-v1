@@ -1,40 +1,58 @@
 export namespace StoreTypes {
-  // exercises state
-  export type ExerciseDifficulty = "beginner" | "intermediate" | "advanced";
-  export interface ExerciseCategory {
+  // Shared Sync Status Type
+  export type SyncStatus = "pending" | "synced" | "error" | "success";
+
+  // Exercises State
+  export interface Exercise {
+    id: string;
+    name: string;
+    category: string; // Simplified for now, can be expanded to ExerciseCategory later
+    description?: string;
+    // equipment?: string[];
+    // difficulty?: ExerciseDifficulty;
+    syncStatus?: SyncStatus; // Optional as not all exercises might be user-created or synced
+  }
+
+  export interface ExercisesState {
+    exercises: Exercise[];
+    // categories: ExerciseCategory[]; // Categories can be managed if needed
+  }
+
+  // Workouts State
+  export interface WorkoutPlanExercise extends Exercise {
+    sets: number; // Required for workout plan exercises
+    reps: number; // Required for workout plan exercises
+    duration?: number; // in seconds, for timed exercises
+    rest?: number; // in seconds, rest after this exercise
+  }
+
+  export interface WorkoutPlan {
     id: string;
     name: string;
     description?: string;
-  }
-  export interface ExerciseItem {
-    id: string;
-    name: string;
-    description: string;
-    categoryId: string;
-    difficulty: ExerciseDifficulty;
-    equipment?: string[];
-  }
-  export interface ExercisesState {
-    exercises: ExerciseItem[];
-    categories: ExerciseCategory[];
+    exercises: WorkoutPlanExercise[];
+    syncStatus: SyncStatus;
   }
 
-  // workouts state
-  export interface WorkoutSession {
-    id: string;
-    date: string;
-    duration: number;
-    exercises: ExerciseItem[];
-    notes?: string;
-  }
-  export interface UserStats {
-    totalSessions: number;
-    totalDuration: number;
-    lastSessionDate?: string;
-  }
   export interface WorkoutsState {
-    sessions: WorkoutSession[];
-    stats: UserStats;
+    workoutPlans: WorkoutPlan[];
+    selectedWorkoutPlanId: string | null;
+  }
+
+  // History State
+  export interface CompletedWorkout {
+    id: string;
+    planId: string; // Reference to the workout plan
+    name: string; // Copied from plan for easy display
+    dateCompleted: string; // ISO string
+    duration: number; // in seconds
+    exercises: WorkoutPlanExercise[]; // Actual exercises performed, could differ from plan
+    notes?: string;
+    syncStatus: SyncStatus;
+  }
+
+  export interface HistoryState {
+    completedWorkouts: CompletedWorkout[];
   }
 
   // offline state
