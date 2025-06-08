@@ -4,12 +4,7 @@ import WorkoutPlannerScreen from "@/screens/WorkoutPlanner";
 import WorkoutSessionScreen from "@/screens/WorkoutSession";
 import WorkoutHistoryScreen from "@/screens/WorkoutHistory";
 import { SafeAreaView } from "react-native-safe-area-context"; // For better layout on notches
-
-export type MainTabsParamList = {
-  WorkoutPlanner: undefined;
-  WorkoutSession: undefined;
-  WorkoutHistory: undefined;
-};
+import { MainTabsParamList } from "./index.type";
 
 const Tab = createMaterialTopTabNavigator<MainTabsParamList>();
 

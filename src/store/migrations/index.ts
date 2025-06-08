@@ -1,2 +1,2 @@
-// Migrations
+// to be added
 export {};

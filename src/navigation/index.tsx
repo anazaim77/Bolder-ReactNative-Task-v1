@@ -6,16 +6,9 @@ import {
 import { createStackNavigator } from "@react-navigation/stack";
 import React from "react";
 
-import LoginScreen from "@/screens/Login"; // Ensure this path is correct
-import MainTabsNavigator from "./MainTabsNavigator"; // To be created
-// import { View, Text } from 'react-native'; // No longer needed for placeholder
-
-// Define your stack param list
-export type RootStackParamList = {
-  Login: undefined;
-  MainTabs: undefined; // Or specific params if your MainTabs need them
-  // Add other screens here
-};
+import LoginScreen from "@/screens/Login";
+import MainTabsNavigator from "./MainTabsNavigator";
+import { RootStackParamList } from "./index.type";
 
 const Stack = createStackNavigator<RootStackParamList>();
 
@@ -28,7 +21,7 @@ const AppNavigator = React.forwardRef<
   NavigationContainerRef<any>,
   AppNavigatorProps
 >(({ initialState, onStateChange }, ref) => {
-  const isLoggedIn = true;
+  const isLoggedIn = false;
 
   return (
     <NavigationContainer
@@ -36,12 +29,12 @@ const AppNavigator = React.forwardRef<
       onStateChange={onStateChange}
       ref={ref}
     >
-      <Stack.Navigator screenOptions={{ headerShown: false }}>
-        {/* {isLoggedIn ? ( */}
-        <Stack.Screen name="MainTabs" component={MainTabsNavigator} />
-        {/* ) : ( */}
+      <Stack.Navigator
+        screenOptions={{ headerShown: false }}
+        initialRouteName="Login"
+      >
         <Stack.Screen name="Login" component={LoginScreen} />
-        {/* )} */}
+        <Stack.Screen name="MainTabs" component={MainTabsNavigator} />
       </Stack.Navigator>
     </NavigationContainer>
   );

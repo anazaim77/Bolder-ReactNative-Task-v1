@@ -1,21 +1,18 @@
-import { StatusBar } from "expo-status-bar";
-import { StyleSheet, Text, View } from "react-native";
 import {
   Inter_300Light,
   Inter_400Regular,
   Inter_500Medium,
   Inter_700Bold,
 } from "@expo-google-fonts/inter";
-import AppLoading from "expo-app-loading"; // Or any other loading screen component
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import AppLoading from "expo-app-loading";
+import { useFonts } from "expo-font";
+import { useEffect, useState } from "react";
 import { Provider } from "react-redux";
 import { PersistGate } from "redux-persist/integration/react";
-import { store, persistor } from "./store";
-import AppNavigator from "./navigation"; // Assuming AppNavigator will be created
-import { useEffect, useRef, useState } from "react";
-import { Platform } from "react-native";
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import { NavigationContainerRef } from "@react-navigation/native";
-import { useFonts } from "expo-font";
+import AppNavigator from "./navigation";
+import { persistor, store } from "./store";
+import { NavigationUtils } from "./utils";
 
 const PERSISTENCE_KEY = "NAVIGATION_STATE_V1";
 
@@ -29,7 +26,6 @@ const App = () => {
 
   const [isReady, setIsReady] = useState(false);
   const [initialState, setInitialState] = useState();
-  const navigationRef = useRef<NavigationContainerRef<any>>(null);
 
   useEffect(() => {
     const restoreState = async () => {
@@ -68,21 +64,11 @@ const App = () => {
           onStateChange={(state) =>
             AsyncStorage.setItem(PERSISTENCE_KEY, JSON.stringify(state))
           }
-          ref={navigationRef}
+          ref={NavigationUtils.navigationRef}
         />
       </PersistGate>
     </Provider>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "#fff",
-    alignItems: "center",
-    justifyContent: "center",
-    fontFamily: "Inter_400Regular", // Apply font globally if desired, or to specific components
-  },
-});
 
 export default App;

@@ -1,11 +1,11 @@
 // Login Screen
-import React from "react";
-import { View, Text, TextInput, Button, StyleSheet, Alert } from "react-native";
-import { useForm, Controller } from "react-hook-form";
-import { useDispatch } from "react-redux";
+import { RootStackParamList } from "@/navigation/index.type";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { useNavigation } from "@react-navigation/native";
 import { StackNavigationProp } from "@react-navigation/stack";
-import { zodResolver } from "@hookform/resolvers/zod";
+import React from "react";
+import { Controller, useForm } from "react-hook-form";
+import { Alert, Button, StyleSheet, Text, TextInput, View } from "react-native";
 import { z } from "zod";
 
 // Zod Schema
@@ -18,16 +18,12 @@ const loginSchema = z.object({
 
 type LoginFormInputs = z.infer<typeof loginSchema>;
 
-// Import RootStackParamList
-import { RootStackParamList } from "../../navigation"; // Adjust path as needed
-
 type LoginScreenNavigationProp = StackNavigationProp<
   RootStackParamList,
   "Login"
 >;
 
 const LoginScreen = () => {
-  const dispatch = useDispatch();
   const navigation = useNavigation<LoginScreenNavigationProp>();
   const {
     control,
@@ -46,11 +42,7 @@ const LoginScreen = () => {
       Alert.alert("Login Failed", "Incorrect password");
       return;
     }
-    // Handle successful login
-    console.log("Login successful", data);
-    // dispatch(loginSuccess({ email: data.email }));
     navigation.push("MainTabs");
-    // Alert.alert('Login Success', `Email: ${data.email}`); // Optional: remove after navigation works
   };
 
   return (

@@ -1,2 +1,0 @@
-// Workouts slice
-export {};
