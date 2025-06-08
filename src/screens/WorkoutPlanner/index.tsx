@@ -10,17 +10,27 @@ import {
   ActivityIndicator,
 } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
+import { useNavigation } from "@react-navigation/native";
 import { RootState, AppDispatch } from "@/store";
 import {
   deleteWorkoutPlan,
-  setWorkoutSyncStatus,
+  selectWorkoutPlan,
 } from "@/store/slices/workoutsSlice";
 import ModalCreateWorkoutPlan from "@/components/workout/ModalCreateWorkoutPlan";
 import SyncStatusBadge from "@/components/common/SyncStatusBadge";
 import { StoreTypes } from "@/types";
+import { MainTabsParamList } from "@/navigation/index.type";
+import { MaterialTopTabScreenProps } from "@react-navigation/material-top-tabs";
+import { NavigationUtils } from "@/utils";
+
+type WorkoutPlannerNavigationProp = MaterialTopTabScreenProps<
+  MainTabsParamList,
+  "WorkoutPlanner"
+>;
 
 export default function WorkoutPlanner() {
   const dispatch = useDispatch<AppDispatch>();
+  const navigation = useNavigation<WorkoutPlannerNavigationProp>();
   const workoutPlans = useSelector(
     (state: RootState) => state.workouts.workoutPlans || []
   );
@@ -28,27 +38,33 @@ export default function WorkoutPlanner() {
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
-  const handleDeletePlan = useCallback((planId: string, planName: string) => {
-    Alert.alert(
-      "Delete Workout Plan",
-      `Are you sure you want to delete "${planName}"? This action cannot be undone.`,
-      [
-        { text: "Cancel", style: "cancel" },
-        {
-          text: "Delete",
-          style: "destructive",
-          onPress: () => {
-            try {
-              dispatch(deleteWorkoutPlan(planId));
-              Alert.alert("Success", "Workout plan deleted successfully.");
-            } catch (error) {
-              Alert.alert("Error", "Failed to delete workout plan. Please try again.");
-            }
+  const handleDeletePlan = useCallback(
+    (planId: string, planName: string) => {
+      Alert.alert(
+        "Delete Workout Plan",
+        `Are you sure you want to delete "${planName}"? This action cannot be undone.`,
+        [
+          { text: "Cancel", style: "cancel" },
+          {
+            text: "Delete",
+            style: "destructive",
+            onPress: () => {
+              try {
+                dispatch(deleteWorkoutPlan(planId));
+                Alert.alert("Success", "Workout plan deleted successfully.");
+              } catch (error) {
+                Alert.alert(
+                  "Error",
+                  "Failed to delete workout plan. Please try again."
+                );
+              }
+            },
           },
-        },
-      ]
-    );
-  }, [dispatch]);
+        ]
+      );
+    },
+    [dispatch]
+  );
 
   const handleRefresh = useCallback(async () => {
     setIsRefreshing(true);
@@ -66,83 +82,142 @@ export default function WorkoutPlanner() {
     setIsModalVisible(false);
   }, []);
 
-  const renderWorkoutPlan = useCallback(({ item }: { item: StoreTypes.WorkoutPlan }) => {
-    const exerciseCount = item.exercises?.length || 0;
-    const totalSets = item.exercises?.reduce((sum, ex) => sum + (ex.sets || 0), 0) || 0;
-    
-    return (
-      <View style={styles.planItem}>
-        <View style={styles.planHeader}>
-          <View style={styles.planInfo}>
-            <Text style={styles.planName}>{item.name}</Text>
-            <View style={styles.planStats}>
-              <Text style={styles.exerciseCount}>
-                {exerciseCount} exercise{exerciseCount !== 1 ? 's' : ''}
-              </Text>
-              <Text style={styles.setCount}>
-                {totalSets} total sets
-              </Text>
-            </View>
-          </View>
-          <View style={styles.planActions}>
-            <TouchableOpacity
-              style={styles.viewButton}
-              onPress={() => Alert.alert("View Plan", "Plan details would open here")}
-              accessibilityRole="button"
-              accessibilityLabel={`View ${item.name} workout plan`}
-            >
-              <Text style={styles.viewButtonText}>View</Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={styles.deleteButton}
-              onPress={() => handleDeletePlan(item.id, item.name)}
-              accessibilityRole="button"
-              accessibilityLabel={`Delete ${item.name} workout plan`}
-            >
-              <Text style={styles.deleteButtonText}>Delete</Text>
-            </TouchableOpacity>
-          </View>
-        </View>
-        
-        {exerciseCount > 0 && (
-          <View style={styles.exercisePreview}>
-            <Text style={styles.exercisePreviewTitle}>Exercises:</Text>
-            <View style={styles.exerciseList}>
-              {item.exercises?.slice(0, 3).map((exercise) => (
-                <Text key={exercise.id} style={styles.exerciseItem}>
-                  • {exercise.name} ({exercise.sets || 0} sets × {exercise.reps || 0} reps)
-                </Text>
-              ))}
-              {exerciseCount > 3 && (
-                <Text style={styles.moreExercises}>
-                  +{exerciseCount - 3} more exercise{exerciseCount - 3 !== 1 ? 's' : ''}
-                </Text>
-              )}
-            </View>
-          </View>
-        )}
-        
-        {item.syncStatus && (
-          <SyncStatusBadge syncStatus={item.syncStatus} style={styles.syncStatusBadge} />
-        )}
-      </View>
-    );
-  }, [handleDeletePlan]);
+  const handleStartWorkout = useCallback(
+    (plan: StoreTypes.WorkoutPlan) => {
+      if (!plan.exercises || plan.exercises.length === 0) {
+        Alert.alert(
+          "No Exercises",
+          "This workout plan doesn't have any exercises. Please add exercises before starting a workout."
+        );
+        return;
+      }
 
-  const emptyComponent = useMemo(() => (
-    <View style={styles.emptyContainer}>
-      <Text style={styles.emptyTitle}>No Workout Plans Yet</Text>
-      <Text style={styles.emptyText}>
-        Create your first workout plan to get started with your fitness journey!
-      </Text>
-      <TouchableOpacity
-        style={styles.emptyCreateButton}
-        onPress={handleCreatePlan}
-      >
-        <Text style={styles.emptyCreateButtonText}>Create Your First Plan</Text>
-      </TouchableOpacity>
-    </View>
-  ), [handleCreatePlan]);
+      Alert.alert(
+        "Start Workout",
+        `Are you ready to start "${plan.name}"? This will begin your workout session with a timer.`,
+        [
+          { text: "Cancel", style: "cancel" },
+          {
+            text: "Start",
+            style: "default",
+            onPress: () => {
+              try {
+                dispatch(selectWorkoutPlan(plan.id));
+                NavigationUtils.navigate("WorkoutSession");
+              } catch (error) {
+                Alert.alert(
+                  "Error",
+                  "Failed to start workout. Please try again."
+                );
+              }
+            },
+          },
+        ]
+      );
+    },
+    [dispatch, navigation]
+  );
+
+  const renderWorkoutPlan = useCallback(
+    ({ item }: { item: StoreTypes.WorkoutPlan }) => {
+      const exerciseCount = item.exercises?.length || 0;
+      const totalSets =
+        item.exercises?.reduce((sum, ex) => sum + (ex.sets || 0), 0) || 0;
+
+      return (
+        <View style={styles.planItem}>
+          <View style={styles.planHeader}>
+            <View style={styles.planInfo}>
+              <Text style={styles.planName}>{item.name}</Text>
+              <View style={styles.planStats}>
+                <Text style={styles.exerciseCount}>
+                  {exerciseCount} exercise{exerciseCount !== 1 ? "s" : ""}
+                </Text>
+                <Text style={styles.setCount}>{totalSets} total sets</Text>
+              </View>
+            </View>
+            <View style={styles.planActions}>
+              <TouchableOpacity
+                style={styles.startButton}
+                onPress={() => handleStartWorkout(item)}
+                accessibilityRole="button"
+                accessibilityLabel={`Start ${item.name} workout`}
+              >
+                <Text style={styles.startButtonText}>Start</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={styles.viewButton}
+                onPress={() =>
+                  Alert.alert("View Plan", "Plan details would open here")
+                }
+                accessibilityRole="button"
+                accessibilityLabel={`View ${item.name} workout plan`}
+              >
+                <Text style={styles.viewButtonText}>View</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={styles.deleteButton}
+                onPress={() => handleDeletePlan(item.id, item.name)}
+                accessibilityRole="button"
+                accessibilityLabel={`Delete ${item.name} workout plan`}
+              >
+                <Text style={styles.deleteButtonText}>Delete</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+
+          {exerciseCount > 0 && (
+            <View style={styles.exercisePreview}>
+              <Text style={styles.exercisePreviewTitle}>Exercises:</Text>
+              <View style={styles.exerciseList}>
+                {item.exercises?.slice(0, 3).map((exercise) => (
+                  <Text key={exercise.id} style={styles.exerciseItem}>
+                    • {exercise.name} ({exercise.sets || 0} sets ×{" "}
+                    {exercise.reps || 0} reps)
+                  </Text>
+                ))}
+                {exerciseCount > 3 && (
+                  <Text style={styles.moreExercises}>
+                    +{exerciseCount - 3} more exercise
+                    {exerciseCount - 3 !== 1 ? "s" : ""}
+                  </Text>
+                )}
+              </View>
+            </View>
+          )}
+
+          {item.syncStatus && (
+            <SyncStatusBadge
+              syncStatus={item.syncStatus}
+              style={styles.syncStatusBadge}
+            />
+          )}
+        </View>
+      );
+    },
+    [handleDeletePlan, handleStartWorkout]
+  );
+
+  const emptyComponent = useMemo(
+    () => (
+      <View style={styles.emptyContainer}>
+        <Text style={styles.emptyTitle}>No Workout Plans Yet</Text>
+        <Text style={styles.emptyText}>
+          Create your first workout plan to get started with your fitness
+          journey!
+        </Text>
+        <TouchableOpacity
+          style={styles.emptyCreateButton}
+          onPress={handleCreatePlan}
+        >
+          <Text style={styles.emptyCreateButtonText}>
+            Create Your First Plan
+          </Text>
+        </TouchableOpacity>
+      </View>
+    ),
+    [handleCreatePlan]
+  );
 
   if (isLoading) {
     return (
@@ -159,7 +234,7 @@ export default function WorkoutPlanner() {
         <View style={styles.headerContent}>
           <Text style={styles.title}>My Workout Plans</Text>
           <Text style={styles.subtitle}>
-            {workoutPlans.length} plan{workoutPlans.length !== 1 ? 's' : ''}
+            {workoutPlans.length} plan{workoutPlans.length !== 1 ? "s" : ""}
           </Text>
         </View>
         <TouchableOpacity
@@ -185,7 +260,7 @@ export default function WorkoutPlanner() {
           <RefreshControl
             refreshing={isRefreshing}
             onRefresh={handleRefresh}
-            colors={['#007bff']}
+            colors={["#007bff"]}
             tintColor="#007bff"
           />
         }
@@ -201,7 +276,7 @@ export default function WorkoutPlanner() {
       />
     </View>
   );
-};
+}
 
 const styles = StyleSheet.create({
   container: {
@@ -309,6 +384,17 @@ const styles = StyleSheet.create({
   planActions: {
     flexDirection: "row",
     gap: 8,
+  },
+  startButton: {
+    backgroundColor: "#007bff",
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 6,
+  },
+  startButtonText: {
+    color: "#fff",
+    fontSize: 14,
+    fontWeight: "600",
   },
   viewButton: {
     backgroundColor: "#28a745",

@@ -22,15 +22,17 @@ export const useDummyDataLoader = () => {
     // Only load dummy data if both exercises and workout plans are empty
     if (isStateEmpty(exercises, workoutPlans)) {
       console.log("Loading dummy data on app initialization...");
-      dispatch(setDummyExercisesIfEmpty());
-      dispatch(setDummyWorkoutPlansIfEmpty());
+      Promise.all([
+        dispatch(setDummyExercisesIfEmpty()),
+        dispatch(setDummyWorkoutPlansIfEmpty()),
+      ]);
     }
-  }, [dispatch, exercises?.length, workoutPlans?.length]);
+  }, [dispatch, exercises, workoutPlans]);
 
   return {
     isDataLoaded: !isStateEmpty(exercises, workoutPlans),
-    exercisesCount: exercises?.length,
-    workoutPlansCount: workoutPlans?.length,
+    exercisesCount: exercises.length,
+    workoutPlansCount: workoutPlans.length,
   };
 };
 
@@ -41,10 +43,12 @@ export const useDummyDataLoader = () => {
 export const useManualDummyDataLoader = () => {
   const dispatch: AppDispatch = useDispatch();
 
-  const loadDummyData = () => {
+  const loadDummyData = async () => {
     console.log("Manually loading dummy data...");
-    dispatch(setDummyExercisesIfEmpty());
-    dispatch(setDummyWorkoutPlansIfEmpty());
+    await Promise.all([
+      dispatch(setDummyExercisesIfEmpty()),
+      dispatch(setDummyWorkoutPlansIfEmpty()),
+    ]);
   };
 
   return { loadDummyData };

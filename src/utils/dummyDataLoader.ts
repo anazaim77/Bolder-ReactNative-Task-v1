@@ -1,5 +1,5 @@
-import dummyData from "@/data/dummyData.json";
-import { StoreTypes } from "@/types";
+import dummyData from '@/data/dummyData.json';
+import { StoreTypes } from '@/types';
 
 /**
  * Interface for the dummy data structure
@@ -18,7 +18,7 @@ export const loadDummyExercisesIfEmpty = (
   currentExercises: StoreTypes.Exercise[]
 ): StoreTypes.Exercise[] => {
   if (currentExercises.length === 0) {
-    console.log("Loading dummy exercises - local state is empty");
+    console.log('Loading dummy exercises - local state is empty');
     return (dummyData as DummyData).exercises;
   }
   return currentExercises;
@@ -33,7 +33,7 @@ export const loadDummyWorkoutPlansIfEmpty = (
   currentWorkoutPlans: StoreTypes.WorkoutPlan[]
 ): StoreTypes.WorkoutPlan[] => {
   if (currentWorkoutPlans.length === 0) {
-    console.log("Loading dummy workout plans - local state is empty");
+    console.log('Loading dummy workout plans - local state is empty');
     return (dummyData as DummyData).workoutPlans;
   }
   return currentWorkoutPlans;
@@ -57,7 +57,7 @@ export const isStateEmpty = (
   exercises: StoreTypes.Exercise[],
   workoutPlans: StoreTypes.WorkoutPlan[]
 ): boolean => {
-  return exercises?.length === 0 && workoutPlans?.length === 0;
+  return exercises.length === 0 && workoutPlans.length === 0;
 };
 
 /**
@@ -73,15 +73,15 @@ export const loadDummyDataIfEmpty = (currentState: {
   workoutPlans: StoreTypes.WorkoutPlan[];
 } => {
   const { exercises, workoutPlans } = currentState;
-
+  
   if (isStateEmpty(exercises, workoutPlans)) {
-    console.log("Loading complete dummy data - state is empty");
+    console.log('Loading complete dummy data - state is empty');
     const dummy = getDummyData();
     return {
       exercises: dummy.exercises,
       workoutPlans: dummy.workoutPlans,
     };
   }
-
+  
   return currentState;
 };
